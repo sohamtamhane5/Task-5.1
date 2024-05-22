@@ -1,0 +1,44 @@
+import tkinter as tk
+import RPi.GPIO as GPIO
+import time
+
+# Set up GPIO
+GPIO.setmode(GPIO.BOARD)
+led_pins = {"red": 23, "green": 33, "blue": 10}  # GPIO pins for LEDs
+
+for pin in led_pins.values():
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, GPIO.LOW)
+
+# Function to blink an LED with a specific color
+def blink_led(color):
+    pin = led_pins.get(color.lower()) 
+    if pin is not None:
+        GPIO.output(pin, GPIO.HIGH)
+        time.sleep(0.5)
+        GPIO.output(pin, GPIO.LOW)
+        time.sleep(0.5)
+    else:
+        print("Invalid color entered.")
+
+def button_click():
+    color = entry.get()  # Get the color from the entry field
+    blink_led(color)
+
+# Creating a GUI
+root = tk.Tk()
+root.title("LED Control")
+
+label = tk.Label(root, text="Enter LED color (red, green, or blue):")
+label.pack()
+entry = tk.Entry(root)
+entry.pack()
+
+# Create button to trigger LED blink
+button = tk.Button(root, text="Blink LED", command=button_click)
+button.pack()
+
+root.mainloop()
+
+# Cleanup GPIO
+GPIO.cleanup()
